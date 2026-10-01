@@ -8,9 +8,30 @@ if ($_SERVER["REQUEST_METHOD"]==="POST") {
 
     $sql = $conn ->prepare("insert into user (name,email,password) values(?,?,?)");
     $sql ->bind_param("sss",$name,$email,$pass);
-   if ( $sql -> execute()) {
-    header("location:login.php");
-   }
+
+    
+
+if (empty($name)) {
+
+    echo "<script>alert('Name is Required')</script>";
+
+} elseif (empty($pass)) {
+
+    echo "<script>alert('Password is Required')</script>";
+
+} elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+
+    echo "<script>alert('Invalid Email Format')</script>";
+
+} else {
+
+    if ($sql->execute()) {
+        header("Location: login.php");
+        exit;
+    }
+
+}
+  
    
 }
 
