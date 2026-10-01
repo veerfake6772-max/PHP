@@ -1,7 +1,10 @@
 <?php
 
 include("db.php");
+session_start();
 $result = $conn ->query("select * from products");
+
+
 
 if ($_SERVER["REQUEST_METHOD"]==="POST") {
     $pname = $_POST["pname"];
@@ -11,7 +14,9 @@ if ($_SERVER["REQUEST_METHOD"]==="POST") {
 
     $sql = $conn->prepare("insert into products (pname,pprice,pcategory,pquantity) values(?,?,?,?)");
     $sql -> bind_param('sdsi',$pname,$pprice,$pcategory,$pquantity);
-    $sql->execute();
+    if ($sql->execute()) {
+        header("location:home.php");
+    }
 }
 
 ?>
@@ -36,10 +41,14 @@ if ($_SERVER["REQUEST_METHOD"]==="POST") {
     <body>
         <header>
             <nav
-                class="navbar navbar-expand-sm navbar-light bg-light"
+                class="navbar navbar-expand-sm navbar-light"
             >
                 <div class="container">
-                    <a class="navbar-brand" href="#">Navbar</a>
+                    <a class="navbar-brand bg-primary rounded px-2" href="#"> <?php if(isset(($_SESSION['name']))){
+                        echo "HELLO ". strtoupper($_SESSION['name']);
+                    }else{
+                        echo "HELLO";
+                    }; ?></a>
                     <button
                         class="navbar-toggler d-lg-none"
                         type="button"
@@ -54,48 +63,20 @@ if ($_SERVER["REQUEST_METHOD"]==="POST") {
                     <div class="collapse navbar-collapse" id="collapsibleNavId">
                         <ul class="navbar-nav me-auto mt-2 mt-lg-0">
                             <li class="nav-item">
-                                <a class="nav-link active" href="#" aria-current="page"
-                                    >Home
-                                    <span class="visually-hidden">(current)</span></a
-                                >
+                                
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Link</a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a
-                                    class="nav-link dropdown-toggle"
-                                    href="#"
-                                    id="dropdownId"
-                                    data-bs-toggle="dropdown"
-                                    aria-haspopup="true"
-                                    aria-expanded="false"
-                                    >Dropdown</a
-                                >
-                                <div
-                                    class="dropdown-menu"
-                                    aria-labelledby="dropdownId"
-                                >
-                                    <a class="dropdown-item" href="#"
-                                        >Action 1</a
-                                    >
-                                    <a class="dropdown-item" href="#"
-                                        >Action 2</a
-                                    >
-                                </div>
+                            
+                            
+                               
                             </li>
                         </ul>
-                        <form class="d-flex my-2 my-lg-0">
-                            <input
-                                class="form-control me-sm-2"
-                                type="text"
-                                placeholder="Search"
-                            />
+                        <form class="d-flex my-2 my-lg-0" action="logout.php">
                             <button
-                                class="btn btn-outline-success my-2 my-sm-0"
+                                class="btn btn-outline-primary my-2 my-sm-0"
                                 type="submit"
+                                
                             >
-                                Search
+                                Logout
                             </button>
                         </form>
                     </div>
@@ -105,7 +86,7 @@ if ($_SERVER["REQUEST_METHOD"]==="POST") {
         </header>
         <main>
 
-        <h3 class="text-center my-4 "> Insert Products</h3>
+        <h3 class="text-center my-4 "> Enter Products Details</h3>
         <div
             class="container col-5 border shadow py-4 rounded"
         >
@@ -164,10 +145,12 @@ if ($_SERVER["REQUEST_METHOD"]==="POST") {
            </form>
         </div>
 
+                <?php if (isset($_SESSION['name'])) {?>
         <h3 class="text-center my-4 ">Products Dashboard</h3>
         <div
             class="container "
         >
+
         <div
             class="table-responsive"
         >
@@ -186,6 +169,7 @@ if ($_SERVER["REQUEST_METHOD"]==="POST") {
                     </tr>
                 </thead>
                 <tbody>
+                    
                     <?php while($row =$result->fetch_assoc()){?>
                     <tr class="">
                         <td scope="row"><?= $row['id']?></td>
@@ -220,7 +204,7 @@ if ($_SERVER["REQUEST_METHOD"]==="POST") {
         
         </div>
         
-        
+        <?php } ?>
         </main>
         <footer>
             <!-- place footer here -->
