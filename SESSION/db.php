@@ -1,6 +1,6 @@
 
 <?php 
- $conn = new mysqli("localhost","root","","k2_php");
+ $conn = new mysqli("localhost","root","","employee_db");
 
 
 ?>
